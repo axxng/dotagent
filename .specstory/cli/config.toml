@@ -50,6 +50,7 @@ output_dir = "~/.specstory/history"
 # Send anonymous product usage analytics to help improve SpecStory.
 # Default: true
 # enabled = false # equivalent to --no-usage-analytics
+enabled = false
 
 [telemetry]
 # OTLP gRPC collector endpoint (e.g., "localhost:4317" or "http://localhost:4317")
