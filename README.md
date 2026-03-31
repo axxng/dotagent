@@ -1,6 +1,6 @@
 # Setup
 
-This setup is specific to using SpecStory and iCloud Drive to sync agent session histories across devices.
+This setup is specific to using SpecStory and iCloud Drive to sync agent session histories and Claude Code project memories across devices.
 
 ## On macOS
 

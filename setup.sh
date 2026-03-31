@@ -3,6 +3,7 @@ set -e
 
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 ICLOUD_SPECSTORY="$HOME/Library/Mobile Documents/com~apple~CloudDocs/.specstory/history"
+ICLOUD_CLAUDE_PROJECTS="$HOME/Library/Mobile Documents/com~apple~CloudDocs/Claude/projects"
 
 echo "Setting up dotagent from $REPO_DIR"
 
@@ -25,6 +26,19 @@ mkdir -p ~/.claude
 ln -sf "$REPO_DIR/AGENT.md" ~/.claude/CLAUDE.md
 ln -sf "$REPO_DIR/.claude/settings.json" ~/.claude/settings.json
 echo "✓ Claude Code config symlinked"
+
+# Claude Code projects → iCloud
+mkdir -p "$ICLOUD_CLAUDE_PROJECTS"
+if [ ! -L "$HOME/.claude/projects" ]; then
+  if [ -d "$HOME/.claude/projects" ]; then
+    cp -R "$HOME/.claude/projects/"* "$ICLOUD_CLAUDE_PROJECTS/" 2>/dev/null || true
+    rm -rf "$HOME/.claude/projects"
+  fi
+  ln -s "$ICLOUD_CLAUDE_PROJECTS" "$HOME/.claude/projects"
+  echo "✓ Claude Code projects symlinked to iCloud"
+else
+  echo "~ Claude Code projects symlink already exists, skipping"
+fi
 
 # Codex
 mkdir -p ~/.codex
