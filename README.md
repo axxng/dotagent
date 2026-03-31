@@ -6,20 +6,11 @@ This setup is specific to using SpecStory and iCloud Drive to sync agent session
 
 ## On macOS
 
-2. Create a symlink `ln -sf <parent path>/dotagent/.specstory/cli/config.toml ~/.specstory/cli/config.toml`. This makes the SpecStory config file reference what we have in this repo
+2. Run `./setup.sh` to create all symlinks (SpecStory, Claude Code, Codex)
 
-3. Create a `.specstory/history` folder in `"$HOME/Library/Mobile Documents/com~apple~CloudDocs/"`. The final path should look like this: `"$HOME/Library/Mobile Documents/com~apple~CloudDocs/.specstory/history"`
+3. Install the CLIs:
+   - `brew install specstoryai/tap/specstory`
+   - `brew install --cask claude-code`
+   - `brew install codex`
 
-4. Create a symlink `ln -s "$HOME/Library/Mobile Documents/com~apple~CloudDocs/.specstory/history" "$HOME/.specstory/history"`. We are making the filesystem redirect any SpecStory history from the global default directory to iCloud. This is a workaround since TOML files cannot process `$HOME`
-
-5. Install Claude Code CLI `brew install --cask claude-code`
-
-6. Create a symlink `ln -sf ~/git-clones/dotagent/AGENT.md ~/.claude/CLAUDE.md`. This makes the CLAUDE.md file reference our AGENT.md so we can have the same agent config across the board
-
-7. Create a symlink `ln -sf ~/git-clones/dotagent/.claude/settings.json ~/.claude/settings.json`. This syncs Claude Code plugin and marketplace settings across devices
-
-8. Install plugins manually: run `/install-plugin` in Claude Code for each plugin listed in settings.json (this only needs to be done once per device)
-
-9. Install Codex CLI `brew install codex`
-
-10. Create a symlink `ln -sf ~/git-clones/dotagent/AGENT.md ~/.codex/AGENTS.md`. Codex references AGENTS.md in the root, we now point it to the same agent config we have
+4. Install plugins in Claude Code via `/plugin install <plugin>@<marketplace>` as listed in `.claude/settings.json`
