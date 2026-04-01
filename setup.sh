@@ -25,8 +25,7 @@ fi
 mkdir -p ~/.claude
 ln -sf "$REPO_DIR/AGENT.md" ~/.claude/CLAUDE.md
 ln -sf "$REPO_DIR/.claude/settings.json" ~/.claude/settings.json
-mkdir -p ~/.claude/hooks
-ln -sf "$REPO_DIR/hooks/stop-auto-commit-push.sh" ~/.claude/hooks/stop-auto-commit-push.sh
+ln -sfn "$REPO_DIR/.claude/hooks" ~/.claude/hooks
 echo "✓ Claude Code config and hooks symlinked"
 
 # Claude Code projects → iCloud
