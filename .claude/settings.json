@@ -135,6 +135,20 @@
       "Bash(wget * | sh *)"
     ]
   },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/stop-auto-commit-push.sh",
+            "timeout": 30,
+            "statusMessage": "Auto-committing and pushing..."
+          }
+        ]
+      }
+    ]
+  },
   "enabledPlugins": {
     "superpowers@superpowers-dev": true,
     "superpowers@claude-plugins-official": true,
