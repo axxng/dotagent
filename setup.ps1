@@ -28,7 +28,9 @@ if (Test-Path (Split-Path $ICloudSpecStory)) {
 New-Item -ItemType Directory -Path "$env:USERPROFILE\.claude" -Force | Out-Null
 New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\CLAUDE.md" -Target "$RepoDir\AGENT.md" -Force | Out-Null
 New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\settings.json" -Target "$RepoDir\.claude\settings.json" -Force | Out-Null
-Write-Host "✓ Claude Code config symlinked"
+New-Item -ItemType Directory -Path "$env:USERPROFILE\.claude\hooks" -Force | Out-Null
+New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\hooks\stop-auto-commit-push.sh" -Target "$RepoDir\hooks\stop-auto-commit-push.sh" -Force | Out-Null
+Write-Host "✓ Claude Code config and hooks symlinked"
 
 # Claude Code projects → iCloud
 if (Test-Path (Split-Path $ICloudClaudeProjects)) {
