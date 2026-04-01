@@ -47,7 +47,16 @@ The boundary is the commit just before the oldest contiguous auto-commit from HE
 ```bash
 # Get the hash of the oldest auto-commit in the contiguous run
 OLDEST_AUTO=$(git log --format="%H %s" | while read hash msg; do case "$msg" in auto:*) echo "$hash" ;; *) break ;; esac; done | tail -1)
-BOUNDARY=$(git rev-parse "${OLDEST_AUTO}^")
+```
+
+Check if the oldest auto-commit is the root commit (has no parent):
+```bash
+if git rev-parse "${OLDEST_AUTO}^" >/dev/null 2>&1; then
+  BOUNDARY=$(git rev-parse "${OLDEST_AUTO}^")
+else
+  # Root commit case — use --root flag for the squash in Step 5
+  BOUNDARY=""
+fi
 ```
 
 ### Step 4: Show summary and ask for commit message
@@ -62,6 +71,16 @@ Then use `AskUserQuestion` to ask for a commit message with these options:
 
 ### Step 5: Squash
 
+If `BOUNDARY` is empty (root commit case):
+```bash
+git update-ref -d HEAD
+git commit -m "<message>
+
+Co-authored-by: Alex Ng <7019953+axxng@users.noreply.github.com>
+Co-Authored-By: Claude <noreply@anthropic.com>"
+```
+
+Otherwise:
 ```bash
 git reset --soft $BOUNDARY
 git commit -m "<message>

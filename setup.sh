@@ -18,10 +18,14 @@ if [ -L "$HOME/.specstory/history" ]; then
   echo "~ SpecStory history symlink already exists, skipping"
 elif [ -d "$HOME/.specstory/history" ]; then
   echo "~ Migrating existing SpecStory history to iCloud"
-  cp -R "$HOME/.specstory/history/"* "$ICLOUD_SPECSTORY/" 2>/dev/null || true
-  rm -rf "$HOME/.specstory/history"
-  ln -s "$ICLOUD_SPECSTORY" "$HOME/.specstory/history"
-  echo "✓ SpecStory history migrated and symlinked to iCloud"
+  if cp -a "$HOME/.specstory/history/." "$ICLOUD_SPECSTORY/"; then
+    rm -rf "$HOME/.specstory/history"
+    ln -s "$ICLOUD_SPECSTORY" "$HOME/.specstory/history"
+    echo "✓ SpecStory history migrated and symlinked to iCloud"
+  else
+    echo "⚠ Failed to copy SpecStory history to iCloud, skipping migration to avoid data loss"
+    exit 1
+  fi
 else
   ln -s "$ICLOUD_SPECSTORY" "$HOME/.specstory/history"
   echo "✓ SpecStory history symlinked to iCloud"
