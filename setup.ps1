@@ -28,7 +28,17 @@ if (Test-Path (Split-Path $ICloudSpecStory)) {
 New-Item -ItemType Directory -Path "$env:USERPROFILE\.claude" -Force | Out-Null
 New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\CLAUDE.md" -Target "$RepoDir\AGENT.md" -Force | Out-Null
 New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\settings.json" -Target "$RepoDir\.claude\settings.json" -Force | Out-Null
-if (Test-Path "$env:USERPROFILE\.claude\hooks") { Remove-Item "$env:USERPROFILE\.claude\hooks" -Force -Recurse }
+if (Test-Path "$env:USERPROFILE\.claude\hooks") {
+    $existing = Get-Item "$env:USERPROFILE\.claude\hooks"
+    if ($existing.LinkType -eq "SymbolicLink") {
+        Remove-Item "$env:USERPROFILE\.claude\hooks" -Force
+    } else {
+        $backup = "$env:USERPROFILE\.claude\hooks.bak"
+        Write-Host "~ Backing up existing hooks to $backup"
+        if (Test-Path $backup) { Remove-Item $backup -Recurse -Force }
+        Move-Item "$env:USERPROFILE\.claude\hooks" $backup
+    }
+}
 New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\hooks" -Target "$RepoDir\.claude\hooks" | Out-Null
 Write-Host "✓ Claude Code config and hooks symlinked"
 

@@ -14,11 +14,17 @@ echo "✓ SpecStory config symlinked"
 
 # SpecStory history → iCloud
 mkdir -p "$ICLOUD_SPECSTORY"
-if [ ! -L "$HOME/.specstory/history" ]; then
+if [ -L "$HOME/.specstory/history" ]; then
+  echo "~ SpecStory history symlink already exists, skipping"
+elif [ -d "$HOME/.specstory/history" ]; then
+  echo "~ Migrating existing SpecStory history to iCloud"
+  cp -R "$HOME/.specstory/history/"* "$ICLOUD_SPECSTORY/" 2>/dev/null || true
+  rm -rf "$HOME/.specstory/history"
+  ln -s "$ICLOUD_SPECSTORY" "$HOME/.specstory/history"
+  echo "✓ SpecStory history migrated and symlinked to iCloud"
+else
   ln -s "$ICLOUD_SPECSTORY" "$HOME/.specstory/history"
   echo "✓ SpecStory history symlinked to iCloud"
-else
-  echo "~ SpecStory history symlink already exists, skipping"
 fi
 
 # Claude Code
