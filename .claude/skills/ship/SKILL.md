@@ -1,7 +1,7 @@
 ---
 name: ship
 description: Squash auto-commits into one clean commit and push
-allowed-tools: Bash(git *), Bash(wc *), Bash(head *), AskUserQuestion
+allowed-tools: Bash(git *), Bash(wc *), Bash(head *), Bash(tail *), AskUserQuestion
 disable-model-invocation: true
 ---
 
@@ -71,9 +71,9 @@ Then use `AskUserQuestion` to ask for a commit message with these options:
 
 ### Step 5: Squash
 
-If `BOUNDARY` is empty (root commit case):
+If `BOUNDARY` is empty (root commit case), reset to the empty tree so all files stay staged but no commit ref is destroyed:
 ```bash
-git update-ref -d HEAD
+git reset --soft $(git hash-object -t tree /dev/null)
 git commit -m "<message>
 
 Co-authored-by: Alex Ng <7019953+axxng@users.noreply.github.com>
@@ -106,5 +106,5 @@ If the push fails because the remote has diverged (due to previous squashed push
 ### Important
 
 - Always include both co-author trailers as the last lines of the commit message.
-- Do not use any tools besides git, wc, head, and AskUserQuestion.
+- Do not use any tools besides git, wc, head, tail, and AskUserQuestion.
 - Do not send extra commentary — just execute the steps.
