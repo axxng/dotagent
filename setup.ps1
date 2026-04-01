@@ -37,8 +37,13 @@ if (Test-Path (Split-Path $ICloudClaudeProjects)) {
     New-Item -ItemType Directory -Path $ICloudClaudeProjects -Force | Out-Null
     if (-not (Test-Path "$env:USERPROFILE\.claude\projects" -PathType Container) -or (Get-Item "$env:USERPROFILE\.claude\projects").LinkType -ne "SymbolicLink") {
         if (Test-Path "$env:USERPROFILE\.claude\projects") {
-            Copy-Item "$env:USERPROFILE\.claude\projects\*" $ICloudClaudeProjects -Recurse -Force -ErrorAction SilentlyContinue
-            Remove-Item "$env:USERPROFILE\.claude\projects" -Recurse -Force
+            try {
+                Copy-Item "$env:USERPROFILE\.claude\projects\*" $ICloudClaudeProjects -Recurse -Force -ErrorAction Stop
+                Remove-Item "$env:USERPROFILE\.claude\projects" -Recurse -Force
+            } catch {
+                Write-Host "⚠ Failed to copy existing projects to iCloud, skipping migration to avoid data loss"
+                exit 1
+            }
         }
         New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\projects" -Target $ICloudClaudeProjects | Out-Null
         Write-Host "✓ Claude Code projects symlinked to iCloud"

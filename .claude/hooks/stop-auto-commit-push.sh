@@ -39,7 +39,7 @@ push_with_retry() {
 BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null)
 case "$BRANCH" in
   main|master)
-    push_with_retry || true
+    # Never auto-push protected branches
     ;;
   *)
     if git rev-parse --abbrev-ref '@{upstream}' >/dev/null 2>&1; then

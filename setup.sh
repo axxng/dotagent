@@ -32,8 +32,12 @@ echo "✓ Claude Code config and hooks symlinked"
 mkdir -p "$ICLOUD_CLAUDE_PROJECTS"
 if [ ! -L "$HOME/.claude/projects" ]; then
   if [ -d "$HOME/.claude/projects" ]; then
-    cp -R "$HOME/.claude/projects/"* "$ICLOUD_CLAUDE_PROJECTS/" 2>/dev/null || true
-    rm -rf "$HOME/.claude/projects"
+    if cp -R "$HOME/.claude/projects/"* "$ICLOUD_CLAUDE_PROJECTS/" 2>/dev/null; then
+      rm -rf "$HOME/.claude/projects"
+    else
+      echo "⚠ Failed to copy existing projects to iCloud, skipping migration to avoid data loss"
+      exit 1
+    fi
   fi
   ln -s "$ICLOUD_CLAUDE_PROJECTS" "$HOME/.claude/projects"
   echo "✓ Claude Code projects symlinked to iCloud"
