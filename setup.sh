@@ -32,7 +32,8 @@ mkdir -p ~/.claude
 ln -sf "$REPO_DIR/AGENT.md" ~/.claude/CLAUDE.md
 ln -sf "$REPO_DIR/.claude/settings.json" ~/.claude/settings.json
 ln -sfn "$REPO_DIR/.claude/hooks" ~/.claude/hooks
-echo "✓ Claude Code config and hooks symlinked"
+ln -sfn "$REPO_DIR/.claude/skills" ~/.claude/skills
+echo "✓ Claude Code config, hooks, and skills symlinked"
 
 # Claude Code projects → iCloud
 mkdir -p "$ICLOUD_CLAUDE_PROJECTS"

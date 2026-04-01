@@ -40,7 +40,19 @@ if (Test-Path "$env:USERPROFILE\.claude\hooks") {
     }
 }
 New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\hooks" -Target "$RepoDir\.claude\hooks" | Out-Null
-Write-Host "✓ Claude Code config and hooks symlinked"
+if (Test-Path "$env:USERPROFILE\.claude\skills") {
+    $existing = Get-Item "$env:USERPROFILE\.claude\skills"
+    if ($existing.LinkType -eq "SymbolicLink") {
+        Remove-Item "$env:USERPROFILE\.claude\skills" -Force
+    } else {
+        $backup = "$env:USERPROFILE\.claude\skills.bak"
+        Write-Host "~ Backing up existing skills to $backup"
+        if (Test-Path $backup) { Remove-Item $backup -Recurse -Force }
+        Move-Item "$env:USERPROFILE\.claude\skills" $backup
+    }
+}
+New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\skills" -Target "$RepoDir\.claude\skills" | Out-Null
+Write-Host "✓ Claude Code config, hooks, and skills symlinked"
 
 # Claude Code projects → iCloud
 if (Test-Path (Split-Path $ICloudClaudeProjects)) {
