@@ -69,6 +69,7 @@ enabled = false
 
 # Claude Code command
 # claude_cmd = "claude"
+claude_cmd = "claude --permission-mode auto --enable-auto-mode"
 
 # Codex CLI command
 # codex_cmd = "codex"
