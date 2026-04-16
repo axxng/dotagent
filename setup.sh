@@ -61,9 +61,49 @@ mkdir -p ~/.codex
 ln -sf "$REPO_DIR/AGENT.md" ~/.codex/AGENTS.md
 echo "✓ Codex config symlinked"
 
+# Install tools via brew
+if command -v brew &>/dev/null; then
+  if ! command -v specstory &>/dev/null; then
+    echo "Installing SpecStory..."
+    brew install specstoryai/tap/specstory
+    echo "OK SpecStory installed"
+  else
+    echo "~ SpecStory already installed, skipping"
+  fi
+
+  if ! command -v claude &>/dev/null; then
+    echo "Installing Claude Code..."
+    brew install --cask claude-code
+    echo "OK Claude Code installed"
+  else
+    echo "~ Claude Code already installed, skipping"
+  fi
+
+  if ! command -v codex &>/dev/null; then
+    echo "Installing Codex..."
+    brew install codex
+    echo "OK Codex installed"
+  else
+    echo "~ Codex already installed, skipping"
+  fi
+else
+  echo "WARNING: brew not found. Install Homebrew first: https://brew.sh"
+  echo "Then install manually: brew install specstoryai/tap/specstory && brew install --cask claude-code && brew install codex"
+fi
+
+# Install Claude Code plugins from settings.json
+if command -v claude &>/dev/null; then
+  echo ""
+  echo "Installing Claude Code plugins..."
+  SETTINGS_FILE="$REPO_DIR/.claude/settings.json"
+  for plugin in $(python3 -c "import json; d=json.load(open('$SETTINGS_FILE')); print('\n'.join(d.get('enabledPlugins',{}).keys()))"); do
+    echo "  Installing $plugin..."
+    claude plugins install "$plugin" 2>/dev/null || true
+  done
+  echo "OK Claude Code plugins installed"
+else
+  echo "WARNING: claude not found, skipping plugin installation"
+fi
+
 echo ""
-echo "Done! Manual steps remaining:"
-echo "  1. brew install specstoryai/tap/specstory"
-echo "  2. brew install --cask claude-code"
-echo "  3. brew install codex"
-echo "  4. Install plugins in Claude Code: /plugin install superpowers@superpowers-dev"
+echo "Done!"

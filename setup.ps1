@@ -31,7 +31,7 @@ New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\settings.json" -
 if (Test-Path "$env:USERPROFILE\.claude\hooks") {
     $existing = Get-Item "$env:USERPROFILE\.claude\hooks"
     if ($existing.LinkType -eq "SymbolicLink") {
-        Remove-Item "$env:USERPROFILE\.claude\hooks" -Force
+        Remove-Item "$env:USERPROFILE\.claude\hooks" -Force -Recurse
     } else {
         $backup = "$env:USERPROFILE\.claude\hooks.bak"
         Write-Host "[SKIP] Backing up existing hooks to $backup"
@@ -43,7 +43,7 @@ New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\hooks" -Target "
 if (Test-Path "$env:USERPROFILE\.claude\skills") {
     $existing = Get-Item "$env:USERPROFILE\.claude\skills"
     if ($existing.LinkType -eq "SymbolicLink") {
-        Remove-Item "$env:USERPROFILE\.claude\skills" -Force
+        Remove-Item "$env:USERPROFILE\.claude\skills" -Force -Recurse
     } else {
         $backup = "$env:USERPROFILE\.claude\skills.bak"
         Write-Host "[SKIP] Backing up existing skills to $backup"
@@ -81,9 +81,64 @@ New-Item -ItemType Directory -Path "$env:USERPROFILE\.codex" -Force | Out-Null
 New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.codex\AGENTS.md" -Target "$RepoDir\AGENT.md" -Force | Out-Null
 Write-Host "[OK] Codex config symlinked"
 
+# PATH: ensure %USERPROFILE%\.local\bin is in user PATH
+$LocalBin = "$env:USERPROFILE\.local\bin"
+$UserPath = [Environment]::GetEnvironmentVariable("Path", "User")
+if ($UserPath -notlike "*$LocalBin*") {
+    [Environment]::SetEnvironmentVariable("Path", "$UserPath;$LocalBin", "User")
+    $env:Path = "$env:Path;$LocalBin"
+    Write-Host "[OK] Added $LocalBin to user PATH"
+} else {
+    Write-Host "[SKIP] $LocalBin already in user PATH"
+}
+
+# Install Claude Code if not present
+if (-not (Get-Command claude -ErrorAction SilentlyContinue)) {
+    Write-Host "Installing Claude Code..."
+    irm https://claude.ai/install.ps1 | iex
+    Write-Host "[OK] Claude Code installed"
+} else {
+    Write-Host "[SKIP] Claude Code already installed"
+}
+
+# Install Node.js via winget if not present (needed for Codex)
+$NodeDir = "$env:ProgramFiles\nodejs"
+if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
+    if (Test-Path "$NodeDir\node.exe") {
+        Write-Host "[OK] Node.js found at $NodeDir, adding to session PATH"
+    } else {
+        Write-Host "Installing Node.js via winget..."
+        winget install OpenJS.NodeJS --source winget --accept-source-agreements --accept-package-agreements --silent
+        Write-Host "[OK] Node.js installed"
+    }
+    # Add to current session PATH
+    $env:Path = "$env:Path;$NodeDir"
+} else {
+    Write-Host "[SKIP] Node.js already installed"
+}
+
+# Install Codex via npm if not present
+if (-not (Get-Command codex -ErrorAction SilentlyContinue)) {
+    Write-Host "Installing Codex..."
+    npm install -g @openai/codex
+    Write-Host "[OK] Codex installed"
+} else {
+    Write-Host "[SKIP] Codex already installed"
+}
+
+# Install Claude Code plugins from settings.json
+$SettingsFile = "$RepoDir\.claude\settings.json"
+$Settings = Get-Content $SettingsFile -Raw | ConvertFrom-Json
+$Plugins = $Settings.enabledPlugins.PSObject.Properties.Name
+Write-Host ""
+Write-Host "Installing Claude Code plugins..."
+foreach ($Plugin in $Plugins) {
+    Write-Host "  Installing $Plugin..."
+    claude plugins install $Plugin 2>$null
+}
+Write-Host "[OK] Claude Code plugins installed"
+
 Write-Host ""
 Write-Host "Done! Manual steps remaining:"
-Write-Host "  1. Install SpecStory: https://github.com/specstoryai/specstory"
-Write-Host "  2. Install Claude Code: irm https://claude.ai/install.ps1 | iex"
-Write-Host "  3. Install Codex: npm install -g @openai/codex"
-Write-Host "  4. Install plugins in Claude Code via /plugin install <plugin>@<marketplace>"
+Write-Host "  1. Install SpecStory: https://github.com/specstoryai/specstory (no winget package yet)"
+Write-Host "  2. Restart your terminal for PATH changes to take effect"

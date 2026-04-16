@@ -4,22 +4,12 @@ This setup is specific to using SpecStory and iCloud Drive to sync agent session
 
 ## On macOS
 
-1. Run `./setup.sh` to create all symlinks (SpecStory, Claude Code, Codex)
+Run `./setup.sh` to create all symlinks, install CLIs (via Homebrew), and install Claude Code plugins.
 
-2. Install the CLIs:
-   - `brew install specstoryai/tap/specstory`
-   - `brew install --cask claude-code`
-   - `brew install codex`
-
-3. Install plugins in Claude Code via `/plugin install <plugin>@<marketplace>` as listed in `.claude/settings.json`
+Requires [Homebrew](https://brew.sh) to be installed first.
 
 ## On Windows
 
-1. Run `.\setup.ps1` in PowerShell (as Administrator) to create all symlinks
+Run `.\setup.ps1` in PowerShell (as Administrator) to create all symlinks, install CLIs (via winget/npm), and install Claude Code plugins.
 
-2. Install the CLIs:
-   - Install SpecStory: https://github.com/specstoryai/specstory
-   - Install Claude Code: `irm https://claude.ai/install.ps1 | iex`
-   - Install Codex: `npm install -g @openai/codex`
-
-3. Install plugins in Claude Code via `/plugin install <plugin>@<marketplace>` as listed in `.claude/settings.json`
+SpecStory must still be installed manually: https://github.com/specstoryai/specstory

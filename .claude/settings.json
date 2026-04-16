@@ -8,7 +8,6 @@
       "WebSearch",
       "Skill",
       "mcp__*",
-
       "Bash(git status *)",
       "Bash(git diff *)",
       "Bash(git log *)",
@@ -36,7 +35,6 @@
       "Bash(git config *)",
       "Bash(git reset --soft *)",
       "Bash(git update-ref *)",
-
       "Bash(ls *)",
       "Bash(cat *)",
       "Bash(head *)",
@@ -53,7 +51,6 @@
       "Bash(touch *)",
       "Bash(chmod *)",
       "Bash(test *)",
-
       "Bash(npm install *)",
       "Bash(npm ci *)",
       "Bash(npm run *)",
@@ -78,7 +75,6 @@
       "Bash(bun install *)",
       "Bash(bun run *)",
       "Bash(bun test *)",
-
       "Bash(pip install *)",
       "Bash(pip list *)",
       "Bash(pip show *)",
@@ -86,7 +82,6 @@
       "Bash(uv *)",
       "Bash(poetry install *)",
       "Bash(poetry run *)",
-
       "Bash(cargo build *)",
       "Bash(cargo test *)",
       "Bash(cargo run *)",
@@ -99,9 +94,7 @@
       "Bash(go mod *)",
       "Bash(go vet *)",
       "Bash(go fmt *)",
-
       "Bash(make *)",
-
       "Bash(gh *)",
       "Bash(jq *)",
       "Bash(sed *)",
@@ -189,5 +182,6 @@
         "repo": "openai/codex-plugin-cc"
       }
     }
-  }
+  },
+  "autoUpdatesChannel": "latest"
 }
