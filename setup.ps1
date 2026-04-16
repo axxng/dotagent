@@ -139,6 +139,7 @@ foreach ($Plugin in $Plugins) {
 Write-Host "[OK] Claude Code plugins installed"
 
 Write-Host ""
-Write-Host "Done! Manual steps remaining:"
-Write-Host "  1. Install SpecStory: https://github.com/specstoryai/specstory (no winget package yet)"
-Write-Host "  2. Restart your terminal for PATH changes to take effect"
+Write-Host "Done! Restart your terminal for PATH changes to take effect."
+Write-Host ""
+Write-Host "Note: SpecStory CLI has no Windows installer yet. This is optional --"
+Write-Host "Claude Code conversations and project memories sync via iCloud without it."

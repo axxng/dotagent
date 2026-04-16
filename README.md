@@ -1,6 +1,13 @@
-# Setup
+# dotagent
 
-This setup is specific to using SpecStory and iCloud Drive to sync agent session histories and Claude Code project memories across devices.
+Syncs Claude Code config, project memories, and conversation history across devices via iCloud Drive. Also sets up Codex and SpecStory.
+
+## What it syncs
+
+- Claude Code settings, hooks, skills, and CLAUDE.md
+- Claude Code project memories and conversations (via iCloud)
+- SpecStory config and history (via iCloud)
+- Codex AGENTS.md
 
 ## On macOS
 
@@ -12,4 +19,4 @@ Requires [Homebrew](https://brew.sh) to be installed first.
 
 Run `.\setup.ps1` in PowerShell (as Administrator) to create all symlinks, install CLIs (via winget/npm), and install Claude Code plugins.
 
-SpecStory must still be installed manually: https://github.com/specstoryai/specstory
+SpecStory CLI has no Windows installer yet. This is optional -- Claude Code conversations and project memories sync via iCloud without it.
