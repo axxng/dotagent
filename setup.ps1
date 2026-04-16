@@ -9,19 +9,19 @@ Write-Host "Setting up dotagent from $RepoDir"
 # SpecStory config
 New-Item -ItemType Directory -Path "$env:USERPROFILE\.specstory\cli" -Force | Out-Null
 New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.specstory\cli\config.toml" -Target "$RepoDir\.specstory\cli\config.toml" -Force | Out-Null
-Write-Host "✓ SpecStory config symlinked"
+Write-Host "[OK] SpecStory config symlinked"
 
-# SpecStory history → iCloud
+# SpecStory history -> iCloud
 if (Test-Path (Split-Path $ICloudSpecStory)) {
     New-Item -ItemType Directory -Path $ICloudSpecStory -Force | Out-Null
     if (-not (Test-Path "$env:USERPROFILE\.specstory\history")) {
         New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.specstory\history" -Target $ICloudSpecStory | Out-Null
-        Write-Host "✓ SpecStory history symlinked to iCloud"
+        Write-Host "[OK] SpecStory history symlinked to iCloud"
     } else {
-        Write-Host "~ SpecStory history symlink already exists, skipping"
+        Write-Host "[SKIP] SpecStory history symlink already exists, skipping"
     }
 } else {
-    Write-Host "~ iCloud Drive not found, skipping SpecStory history symlink"
+    Write-Host "[SKIP] iCloud Drive not found, skipping SpecStory history symlink"
 }
 
 # Claude Code
@@ -34,7 +34,7 @@ if (Test-Path "$env:USERPROFILE\.claude\hooks") {
         Remove-Item "$env:USERPROFILE\.claude\hooks" -Force
     } else {
         $backup = "$env:USERPROFILE\.claude\hooks.bak"
-        Write-Host "~ Backing up existing hooks to $backup"
+        Write-Host "[SKIP] Backing up existing hooks to $backup"
         if (Test-Path $backup) { Remove-Item $backup -Recurse -Force }
         Move-Item "$env:USERPROFILE\.claude\hooks" $backup
     }
@@ -46,15 +46,15 @@ if (Test-Path "$env:USERPROFILE\.claude\skills") {
         Remove-Item "$env:USERPROFILE\.claude\skills" -Force
     } else {
         $backup = "$env:USERPROFILE\.claude\skills.bak"
-        Write-Host "~ Backing up existing skills to $backup"
+        Write-Host "[SKIP] Backing up existing skills to $backup"
         if (Test-Path $backup) { Remove-Item $backup -Recurse -Force }
         Move-Item "$env:USERPROFILE\.claude\skills" $backup
     }
 }
 New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\skills" -Target "$RepoDir\.claude\skills" | Out-Null
-Write-Host "✓ Claude Code config, hooks, and skills symlinked"
+Write-Host "[OK] Claude Code config, hooks, and skills symlinked"
 
-# Claude Code projects → iCloud
+# Claude Code projects -> iCloud
 if (Test-Path (Split-Path $ICloudClaudeProjects)) {
     New-Item -ItemType Directory -Path $ICloudClaudeProjects -Force | Out-Null
     if (-not (Test-Path "$env:USERPROFILE\.claude\projects" -PathType Container) -or (Get-Item "$env:USERPROFILE\.claude\projects").LinkType -ne "SymbolicLink") {
@@ -63,23 +63,23 @@ if (Test-Path (Split-Path $ICloudClaudeProjects)) {
                 Copy-Item "$env:USERPROFILE\.claude\projects\*" $ICloudClaudeProjects -Recurse -Force -ErrorAction Stop
                 Remove-Item "$env:USERPROFILE\.claude\projects" -Recurse -Force
             } catch {
-                Write-Host "⚠ Failed to copy existing projects to iCloud, skipping migration to avoid data loss"
+                Write-Host "[ERROR] Failed to copy existing projects to iCloud, skipping migration to avoid data loss"
                 exit 1
             }
         }
         New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\projects" -Target $ICloudClaudeProjects | Out-Null
-        Write-Host "✓ Claude Code projects symlinked to iCloud"
+        Write-Host "[OK] Claude Code projects symlinked to iCloud"
     } else {
-        Write-Host "~ Claude Code projects symlink already exists, skipping"
+        Write-Host "[SKIP] Claude Code projects symlink already exists, skipping"
     }
 } else {
-    Write-Host "~ iCloud Drive not found, skipping Claude Code projects symlink"
+    Write-Host "[SKIP] iCloud Drive not found, skipping Claude Code projects symlink"
 }
 
 # Codex
 New-Item -ItemType Directory -Path "$env:USERPROFILE\.codex" -Force | Out-Null
 New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.codex\AGENTS.md" -Target "$RepoDir\AGENT.md" -Force | Out-Null
-Write-Host "✓ Codex config symlinked"
+Write-Host "[OK] Codex config symlinked"
 
 Write-Host ""
 Write-Host "Done! Manual steps remaining:"
