@@ -98,7 +98,7 @@ if command -v claude &>/dev/null; then
   SETTINGS_FILE="$REPO_DIR/.claude/settings.json"
   for plugin in $(python3 -c "import json; d=json.load(open('$SETTINGS_FILE')); print('\n'.join(d.get('enabledPlugins',{}).keys()))"); do
     echo "  Installing $plugin..."
-    claude plugins install "$plugin" 2>/dev/null || true
+    claude plugins install "$plugin" --scope user 2>/dev/null || true
   done
   echo "OK Claude Code plugins installed"
 else

@@ -134,7 +134,7 @@ Write-Host ""
 Write-Host "Installing Claude Code plugins..."
 foreach ($Plugin in $Plugins) {
     Write-Host "  Installing $Plugin..."
-    claude plugins install $Plugin 2>$null
+    claude plugins install $Plugin --scope user 2>$null
 }
 Write-Host "[OK] Claude Code plugins installed"
 
