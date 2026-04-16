@@ -61,6 +61,61 @@ mkdir -p ~/.codex
 ln -sf "$REPO_DIR/AGENT.md" ~/.codex/AGENTS.md
 echo "✓ Codex config symlinked"
 
+# Python via pyenv
+if command -v pyenv &>/dev/null; then
+  echo "~ pyenv already installed, skipping"
+else
+  if command -v brew &>/dev/null; then
+    echo "Installing pyenv via brew..."
+    brew install pyenv
+    echo "OK pyenv installed"
+  else
+    echo "Installing pyenv via installer..."
+    curl -fsSL https://pyenv.run | bash
+    echo "OK pyenv installed"
+  fi
+fi
+
+# Ensure pyenv is on PATH for this session
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PYENV_ROOT/shims:$PATH"
+eval "$(pyenv init -)" 2>/dev/null || true
+
+LATEST_PYTHON=$(pyenv install --list | grep -E '^\s+3\.[0-9]+\.[0-9]+$' | tail -1 | tr -d ' ')
+echo "Latest stable Python: $LATEST_PYTHON"
+
+if pyenv versions --bare | grep -q "$LATEST_PYTHON"; then
+  echo "~ Python $LATEST_PYTHON already installed via pyenv, skipping"
+else
+  echo "Installing Python $LATEST_PYTHON via pyenv..."
+  pyenv install "$LATEST_PYTHON"
+  echo "OK Python $LATEST_PYTHON installed"
+fi
+
+pyenv global "$LATEST_PYTHON"
+echo "✓ Python $(python3 --version) set as global"
+
+# Add pyenv init to shell profile if not already there
+SHELL_PROFILE=""
+if [ -f "$HOME/.zshrc" ]; then
+  SHELL_PROFILE="$HOME/.zshrc"
+elif [ -f "$HOME/.bashrc" ]; then
+  SHELL_PROFILE="$HOME/.bashrc"
+fi
+
+if [ -n "$SHELL_PROFILE" ] && ! grep -q "pyenv init" "$SHELL_PROFILE" 2>/dev/null; then
+  cat >> "$SHELL_PROFILE" << 'PYENV_INIT'
+
+# pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+PYENV_INIT
+  echo "✓ pyenv init added to $SHELL_PROFILE"
+else
+  echo "~ pyenv init already in shell profile, skipping"
+fi
+
 # Install tools via brew
 if command -v brew &>/dev/null; then
   if ! command -v specstory &>/dev/null; then

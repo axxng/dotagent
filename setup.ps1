@@ -92,6 +92,61 @@ if ($UserPath -notlike "*$LocalBin*") {
     Write-Host "[SKIP] $LocalBin already in user PATH"
 }
 
+# Python via pyenv-win
+$PyenvRoot = "$env:USERPROFILE\.pyenv\pyenv-win"
+if (Test-Path "$PyenvRoot\bin\pyenv.bat") {
+    Write-Host "[SKIP] pyenv-win already installed"
+} else {
+    Write-Host "Installing pyenv-win..."
+    $installer = "$env:TEMP\install-pyenv-win.ps1"
+    Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile $installer
+    & $installer
+    Remove-Item $installer -Force -ErrorAction SilentlyContinue
+    Write-Host "[OK] pyenv-win installed"
+}
+
+# Ensure pyenv is on PATH for this session
+$env:Path = "$PyenvRoot\bin;$PyenvRoot\shims;$env:Path"
+
+# Ensure pyenv is on user PATH permanently
+$UserPath = [Environment]::GetEnvironmentVariable("Path", "User")
+$pyenvBin = "$PyenvRoot\bin"
+$pyenvShims = "$PyenvRoot\shims"
+$pathUpdated = $false
+if ($UserPath -notlike "*$pyenvBin*") {
+    $UserPath = "$pyenvBin;$UserPath"
+    $pathUpdated = $true
+}
+if ($UserPath -notlike "*$pyenvShims*") {
+    $UserPath = "$pyenvShims;$UserPath"
+    $pathUpdated = $true
+}
+if ($pathUpdated) {
+    [Environment]::SetEnvironmentVariable("Path", $UserPath, "User")
+    Write-Host "[OK] pyenv-win added to user PATH"
+} else {
+    Write-Host "[SKIP] pyenv-win already in user PATH"
+}
+
+# Find latest stable Python version
+$allVersions = & pyenv install --list 2>$null
+$latestPython = ($allVersions | ForEach-Object { $_.Trim() } | Where-Object { $_ -match '^\d+\.\d+\.\d+$' } | Sort-Object { [version]$_ } | Select-Object -Last 1)
+Write-Host "Latest stable Python: $latestPython"
+
+# Install if not present
+$installedVersions = & pyenv versions --bare 2>$null
+if ($installedVersions -match [regex]::Escape($latestPython)) {
+    Write-Host "[SKIP] Python $latestPython already installed via pyenv"
+} else {
+    Write-Host "Installing Python $latestPython via pyenv (this may take a minute)..."
+    & pyenv install $latestPython
+    Write-Host "[OK] Python $latestPython installed"
+}
+
+& pyenv global $latestPython
+$pyVer = & python --version 2>$null
+Write-Host "[OK] $pyVer set as global"
+
 # Install Claude Code if not present
 if (-not (Get-Command claude -ErrorAction SilentlyContinue)) {
     Write-Host "Installing Claude Code..."
