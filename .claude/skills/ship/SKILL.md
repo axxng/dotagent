@@ -14,9 +14,22 @@ allowed-tools: Bash(git *), AskUserQuestion
 
 Squash all contiguous `auto:` commits from HEAD into one clean commit, then push.
 
-### Step 1: Sync with remote
+### Step 1: Find the squash boundary
 
-Fetch and rebase onto the remote to pick up any changes pushed from other machines:
+Run:
+```bash
+git log --format="%H %s"
+```
+
+Read the output and identify the contiguous run of commits from HEAD whose subject starts with `auto:`. Stop at the first commit that does not start with `auto:`.
+
+If there are zero auto-commits, respond with "Nothing to ship — no auto-commits found." and stop. **Do not fetch or rebase** — exiting early avoids clobbering local history rewrites (e.g. amended commit messages) that haven't been pushed yet.
+
+Note the hash of the oldest auto-commit in the contiguous run.
+
+### Step 2: Sync with remote
+
+Only reached if there are auto-commits to squash. Fetch and rebase onto the remote to pick up any changes pushed from other machines:
 ```bash
 git fetch origin
 ```
@@ -28,18 +41,7 @@ git rebase origin/<CURRENT_BRANCH>
 
 If the rebase has conflicts, abort with `git rebase --abort` and inform the user.
 
-### Step 2: Find the squash boundary
-
-Run:
-```bash
-git log --format="%H %s"
-```
-
-Read the output and identify the contiguous run of commits from HEAD whose subject starts with `auto:`. Stop at the first commit that does not start with `auto:`.
-
-If there are zero auto-commits, respond with "Nothing to ship — no auto-commits found." and stop.
-
-Note the hash of the oldest auto-commit in the contiguous run.
+After the rebase, re-run `git log --format="%H %s"` and re-identify the auto-commits, since hashes may have changed.
 
 ### Step 3: Handle dirty working tree
 
