@@ -1,3 +1,7 @@
+## Bash Commands
+
+Prefer separate bash tool calls over compound commands (`&&`, `;`). This allows individual commands to match the allow list and auto-approve without manual intervention. Pipes are fine — they represent a single logical operation.
+
 ## Writing
 
 When asked to write, follow: https://github.com/axxng/chatgpt-custom-instruction/blob/main/natural-writing-guide.md
