@@ -14,7 +14,21 @@ allowed-tools: Bash(git *), AskUserQuestion
 
 Squash all contiguous `auto:` commits from HEAD into one clean commit, then push.
 
-### Step 1: Find the squash boundary
+### Step 1: Sync with remote
+
+Fetch and rebase onto the remote to pick up any changes pushed from other machines:
+```bash
+git fetch origin
+```
+
+Then rebase onto the remote branch:
+```bash
+git rebase origin/<CURRENT_BRANCH>
+```
+
+If the rebase has conflicts, abort with `git rebase --abort` and inform the user.
+
+### Step 2: Find the squash boundary
 
 Run:
 ```bash
@@ -27,7 +41,7 @@ If there are zero auto-commits, respond with "Nothing to ship — no auto-commit
 
 Note the hash of the oldest auto-commit in the contiguous run.
 
-### Step 2: Handle dirty working tree
+### Step 3: Handle dirty working tree
 
 Run:
 ```bash
@@ -42,7 +56,7 @@ git commit -m "auto: final changes before ship" --no-verify
 
 Then re-run `git log --format="%H %s"` and re-identify the auto-commits (the new one is included).
 
-### Step 3: Get the squash boundary hash
+### Step 4: Get the squash boundary hash
 
 Check if the oldest auto-commit is the root commit:
 ```bash
@@ -52,7 +66,7 @@ git rev-parse <OLDEST_AUTO_HASH>^
 - If this succeeds, the boundary is the returned parent hash.
 - If it fails (no parent), this is the root commit case — set boundary to empty.
 
-### Step 4: Show summary and ask for commit message
+### Step 5: Show summary and ask for commit message
 
 Show the user what will be squashed:
 - Number of auto-commits being squashed
@@ -62,7 +76,7 @@ Then use `AskUserQuestion` to ask for a commit message with these options:
 - **Write my own** — let the user provide a custom message
 - **Auto-generate** — generate a message summarizing the changes (e.g., "Update setup scripts and add /ship command")
 
-### Step 5: Squash
+### Step 6: Squash
 
 If boundary is empty (root commit case), reset to the empty tree so all files stay staged but no commit ref is destroyed:
 ```bash
@@ -82,7 +96,7 @@ Co-authored-by: Alex Ng <7019953+axxng@users.noreply.github.com>
 Co-Authored-By: Claude <noreply@anthropic.com>"
 ```
 
-### Step 6: Push
+### Step 7: Push
 
 Check for upstream and push:
 ```bash
