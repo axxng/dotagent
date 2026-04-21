@@ -1,6 +1,5 @@
 {
   "permissions": {
-    "defaultMode": "auto",
     "allow": [
       "Read",
       "Edit",
@@ -133,7 +132,8 @@
       "Bash(curl * | sh *)",
       "Bash(wget * | bash *)",
       "Bash(wget * | sh *)"
-    ]
+    ],
+    "defaultMode": "auto"
   },
   "hooks": {},
   "enabledPlugins": {
@@ -172,5 +172,6 @@
       }
     }
   },
-  "autoUpdatesChannel": "latest"
+  "autoUpdatesChannel": "latest",
+  "skipAutoPermissionPrompt": true
 }
