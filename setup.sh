@@ -193,6 +193,8 @@ if command -v npx &>/dev/null; then
   else
     echo "Installing GSD for Claude Code..."
     npx -y get-shit-done-cc@latest --claude --global
+    # GSD writes hardcoded $HOME paths; replace with portable $HOME variable
+    sed -i '' "s|$HOME/.claude/hooks/|\$HOME/.claude/hooks/|g" "$REPO_DIR/.claude/settings.json"
     echo "OK GSD installed for Claude Code"
   fi
   if [ -f "$HOME/.codex/gsd-file-manifest.json" ]; then
