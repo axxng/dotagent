@@ -75,7 +75,12 @@ echo "✓ Codex config and skills symlinked"
 
 # Python via pyenv
 if command -v pyenv &>/dev/null; then
-  echo "~ pyenv already installed, skipping"
+  echo "~ pyenv already installed, updating..."
+  if command -v brew &>/dev/null && brew list pyenv &>/dev/null; then
+    brew upgrade pyenv 2>/dev/null || true
+  else
+    pyenv update 2>/dev/null || true
+  fi
 else
   if command -v brew &>/dev/null; then
     echo "Installing pyenv via brew..."
@@ -100,7 +105,15 @@ if pyenv versions --bare | grep -q "$LATEST_PYTHON"; then
   echo "~ Python $LATEST_PYTHON already installed via pyenv, skipping"
 else
   echo "Installing Python $LATEST_PYTHON via pyenv..."
-  pyenv install "$LATEST_PYTHON"
+  # On macOS with Homebrew, pin openssl@3 to avoid linking against a stale openssl@1.1
+  if [ "$(uname)" = "Darwin" ] && command -v brew &>/dev/null && brew --prefix openssl@3 &>/dev/null; then
+    OPENSSL_PREFIX="$(brew --prefix openssl@3)"
+    LDFLAGS="-L${OPENSSL_PREFIX}/lib" CPPFLAGS="-I${OPENSSL_PREFIX}/include" \
+      PKG_CONFIG_PATH="${OPENSSL_PREFIX}/lib/pkgconfig" \
+      pyenv install "$LATEST_PYTHON"
+  else
+    pyenv install "$LATEST_PYTHON"
+  fi
   echo "OK Python $LATEST_PYTHON installed"
 fi
 

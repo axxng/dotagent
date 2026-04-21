@@ -108,7 +108,8 @@ if ($UserPath -notlike "*$LocalBin*") {
 # Python via pyenv-win
 $PyenvRoot = "$env:USERPROFILE\.pyenv\pyenv-win"
 if (Test-Path "$PyenvRoot\bin\pyenv.bat") {
-    Write-Host "[SKIP] pyenv-win already installed"
+    Write-Host "[SKIP] pyenv-win already installed, updating..."
+    & "$PyenvRoot\bin\pyenv" update 2>$null
 } else {
     Write-Host "Installing pyenv-win..."
     $installer = "$env:TEMP\install-pyenv-win.ps1"
