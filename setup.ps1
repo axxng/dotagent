@@ -79,7 +79,20 @@ if (Test-Path (Split-Path $ICloudClaudeProjects)) {
 # Codex
 New-Item -ItemType Directory -Path "$env:USERPROFILE\.codex" -Force | Out-Null
 New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.codex\AGENTS.md" -Target "$RepoDir\AGENT.md" -Force | Out-Null
-Write-Host "[OK] Codex config symlinked"
+New-Item -ItemType Directory -Path "$RepoDir\.codex\skills" -Force | Out-Null
+if (Test-Path "$env:USERPROFILE\.codex\skills") {
+    $existing = Get-Item "$env:USERPROFILE\.codex\skills"
+    if ($existing.LinkType -eq "SymbolicLink") {
+        Remove-Item "$env:USERPROFILE\.codex\skills" -Force -Recurse
+    } else {
+        $backup = "$env:USERPROFILE\.codex\skills.bak"
+        Write-Host "[SKIP] Backing up existing Codex skills to $backup"
+        if (Test-Path $backup) { Remove-Item $backup -Recurse -Force }
+        Move-Item "$env:USERPROFILE\.codex\skills" $backup
+    }
+}
+New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.codex\skills" -Target "$RepoDir\.codex\skills" | Out-Null
+Write-Host "[OK] Codex config and skills symlinked"
 
 # PATH: ensure %USERPROFILE%\.local\bin is in user PATH
 $LocalBin = "$env:USERPROFILE\.local\bin"
@@ -172,6 +185,13 @@ if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
     Write-Host "[SKIP] Node.js already installed"
 }
 
+# Ensure npm's global bin dir is on session PATH so Get-Command finds
+# tools installed via `npm install -g` in this same run.
+$NpmGlobalBin = "$env:APPDATA\npm"
+if ($env:Path -notlike "*$NpmGlobalBin*") {
+    $env:Path = "$env:Path;$NpmGlobalBin"
+}
+
 # Install Codex via npm if not present
 if (-not (Get-Command codex -ErrorAction SilentlyContinue)) {
     Write-Host "Installing Codex..."
@@ -192,6 +212,33 @@ foreach ($Plugin in $Plugins) {
     claude plugins install $Plugin --scope user 2>$null
 }
 Write-Host "[OK] Claude Code plugins installed"
+
+# Install Get Shit Done (GSD) skills for Claude Code and Codex
+Write-Host ""
+if (Test-Path "$env:USERPROFILE\.claude\gsd-file-manifest.json") {
+    Write-Host "[SKIP] GSD already installed for Claude Code"
+} else {
+    Write-Host "Installing GSD for Claude Code..."
+    npx -y get-shit-done-cc@latest --claude --global
+    Write-Host "[OK] GSD installed for Claude Code"
+}
+if (Test-Path "$env:USERPROFILE\.codex\gsd-file-manifest.json") {
+    Write-Host "[SKIP] GSD already installed for Codex"
+} else {
+    Write-Host "Installing GSD for Codex..."
+    npx -y get-shit-done-cc@latest --codex --global
+    Write-Host "[OK] GSD installed for Codex"
+}
+
+# Install GSD SDK (its bundled self-build step fails on Windows; we install the
+# published package directly so `/gsd-*` commands and programmatic usage work)
+if (Get-Command gsd-sdk -ErrorAction SilentlyContinue) {
+    Write-Host "[SKIP] GSD SDK already installed"
+} else {
+    Write-Host "Installing GSD SDK..."
+    npm install -g "@gsd-build/sdk"
+    Write-Host "[OK] GSD SDK installed"
+}
 
 Write-Host ""
 Write-Host "Done! Restart your terminal for PATH changes to take effect."

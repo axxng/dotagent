@@ -59,7 +59,19 @@ fi
 # Codex
 mkdir -p ~/.codex
 ln -sf "$REPO_DIR/AGENT.md" ~/.codex/AGENTS.md
-echo "✓ Codex config symlinked"
+mkdir -p "$REPO_DIR/.codex/skills"
+if [ -L "$HOME/.codex/skills" ]; then
+  ln -sfn "$REPO_DIR/.codex/skills" ~/.codex/skills
+elif [ -d "$HOME/.codex/skills" ]; then
+  backup="$HOME/.codex/skills.bak"
+  echo "~ Backing up existing Codex skills to $backup"
+  rm -rf "$backup"
+  mv "$HOME/.codex/skills" "$backup"
+  ln -s "$REPO_DIR/.codex/skills" ~/.codex/skills
+else
+  ln -s "$REPO_DIR/.codex/skills" ~/.codex/skills
+fi
+echo "✓ Codex config and skills symlinked"
 
 # Python via pyenv
 if command -v pyenv &>/dev/null; then
@@ -158,6 +170,37 @@ if command -v claude &>/dev/null; then
   echo "OK Claude Code plugins installed"
 else
   echo "WARNING: claude not found, skipping plugin installation"
+fi
+
+# Install Get Shit Done (GSD) skills for Claude Code and Codex
+echo ""
+if command -v npx &>/dev/null; then
+  if [ -f "$HOME/.claude/gsd-file-manifest.json" ]; then
+    echo "~ GSD already installed for Claude Code, skipping"
+  else
+    echo "Installing GSD for Claude Code..."
+    npx -y get-shit-done-cc@latest --claude --global
+    echo "OK GSD installed for Claude Code"
+  fi
+  if [ -f "$HOME/.codex/gsd-file-manifest.json" ]; then
+    echo "~ GSD already installed for Codex, skipping"
+  else
+    echo "Installing GSD for Codex..."
+    npx -y get-shit-done-cc@latest --codex --global
+    echo "OK GSD installed for Codex"
+  fi
+
+  # Install GSD SDK (its bundled self-build step is flaky; install the published
+  # package directly so /gsd-* commands and programmatic usage work)
+  if command -v gsd-sdk &>/dev/null; then
+    echo "~ GSD SDK already installed, skipping"
+  else
+    echo "Installing GSD SDK..."
+    npm install -g @gsd-build/sdk
+    echo "OK GSD SDK installed"
+  fi
+else
+  echo "WARNING: npx not found, skipping GSD installation"
 fi
 
 echo ""

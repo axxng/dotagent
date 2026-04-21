@@ -62,6 +62,9 @@
       "Bash(npm outdated *)",
       "Bash(npm view *)",
       "Bash(npx *)",
+      "Bash(npx -y get-shit-done-cc*)",
+      "Bash(npx get-shit-done-cc*)",
+      "Bash(npm install -g @gsd-build/sdk*)",
       "Bash(yarn install *)",
       "Bash(yarn run *)",
       "Bash(yarn test *)",
@@ -173,5 +176,13 @@
     }
   },
   "autoUpdatesChannel": "latest",
-  "skipAutoPermissionPrompt": true
+  "skipAutoPermissionPrompt": true,
+  "autoMode": {
+    "environment": [
+      "Personal dev machine owned by the user. Global installs of user-authorized dev CLIs (Claude Code, Codex, GSD and its SDK, etc.) are expected and intentional."
+    ],
+    "allow": [
+      "Running the GSD installer (`npx -y get-shit-done-cc@latest` with any flags) and installing its companion SDK (`npm install -g @gsd-build/sdk` or building the SDK locally from the npm/npx cache via `npm install && npm run build && npm install -g .`) is user-authorized — these are the documented install steps for get-shit-done."
+    ]
+  }
 }
