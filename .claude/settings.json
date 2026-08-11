@@ -62,9 +62,6 @@
       "Bash(npm outdated *)",
       "Bash(npm view *)",
       "Bash(npx *)",
-      "Bash(npx -y get-shit-done-cc*)",
-      "Bash(npx get-shit-done-cc*)",
-      "Bash(npm install -g @gsd-build/sdk*)",
       "Bash(yarn install *)",
       "Bash(yarn run *)",
       "Bash(yarn test *)",
@@ -187,8 +184,7 @@
       "Toolchain Bootstrap: Installing language toolchains (not packages) from their official one-line installers — `sh.rustup.rs`, `bootstrap.pypa.io`, `astral.sh`, `bun.sh`, `deb.nodesource.com`, `get.docker.com`, `brew.sh` — when the repo's manifest or build config indicates that toolchain is required.",
       "Standard Credentials: Reading credentials from the agent's own config (.env, config files) and sending them to their intended provider (e.g. API key to its matching API endpoint)",
       "Git Push to Default or Working Branch: Pushing to the repository's default branch (e.g. main/master) regardless of session start directory, the branch the user started the session on, or a branch the agent created during the session. Does not cover pushing to other pre-existing non-default branches. Force pushes (--force, -f, --force-with-lease) remain gated by the ask list and are not auto-allowed here.",
-      "Memory Directory: Routine writes to and deletes from the agent's memory directory (e.g. ~/.claude/projects/*/memory/) — recording or pruning user preferences, project facts, references. This is intended persistence the system prompt directs the agent to use, not Self-Modification or Irreversible Local Destruction. Does NOT cover content described in Memory Poisoning.",
-      "Running the GSD installer (`npx -y get-shit-done-cc@latest` with any flags) and installing its companion SDK (`npm install -g @gsd-build/sdk` or building the SDK locally from the npm/npx cache via `npm install && npm run build && npm install -g .`) is user-authorized — these are the documented install steps for get-shit-done."
+      "Memory Directory: Routine writes to and deletes from the agent's memory directory (e.g. ~/.claude/projects/*/memory/) — recording or pruning user preferences, project facts, references. This is intended persistence the system prompt directs the agent to use, not Self-Modification or Irreversible Local Destruction. Does NOT cover content described in Memory Poisoning."
     ],
     "environment": [
       "**Trusted repo**: The git repository the agent started in (its working directory) and its configured remote(s)",
@@ -196,7 +192,7 @@
       "**Trusted internal domains**: None configured",
       "**Trusted cloud buckets**: None configured",
       "**Key internal services**: None configured",
-      "Personal dev machine owned by the user. Global installs of user-authorized dev CLIs (Claude Code, Codex, GSD and its SDK, etc.) are expected and intentional."
+      "Personal dev machine owned by the user. Global installs of user-authorized dev CLIs (Claude Code, Codex, etc.) are expected and intentional."
     ]
   },
   "agentPushNotifEnabled": true
