@@ -9,6 +9,8 @@ Syncs Claude Code config, project memories, and conversation history across devi
 - SpecStory config and history (via iCloud)
 - Codex AGENTS.md and skills
 
+`AGENT.md` is linked as both `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`. It also tells every agent to read from and write back to my brain repo ([axxng/eight](https://github.com/axxng/eight)).
+
 ## What it installs
 
 - Claude Code, Codex, Python (via pyenv), SpecStory (macOS)
