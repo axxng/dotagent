@@ -11,7 +11,8 @@ When asked to write, follow: https://github.com/axxng/chatgpt-custom-instruction
 I keep my portable brain in a private repo: github.com/axxng/eight. It's the one place my context lands no matter which assistant I talk to. Its AGENTS.md is the source of truth for how to read and write it. Follow that over anything here.
 
 - **At the start of a session,** pull it and read AGENTS.md, then memory/MEMORY.md and the knowledge/ files. Use sessions/ to pick up where I left off and meeting-notes/ for my meetings. Don't ask me for something that's already in there.
-- **Before you finish,** write back what you learned without waiting for me to ask. Harvest from your own tool's store too: crawl all of ~/.claude if you're Claude, or ~/.codex if you're Codex, not only a memory/ folder. Then do a mining pass over ~/.specstory/history. Distill facts, never copy transcripts in.
+- **Before you finish,** save this session without waiting for me to ask. Cover only what came up in this conversation: durable facts, plus an update to sessions/<topic>.md if we moved a piece of work forward. Skip it if nothing durable came up.
+- **Full harvest is separate.** Only crawl your tool's whole store (~/.claude or ~/.codex) and mine ~/.specstory/history when I ask for a full harvest. Then follow AGENTS.md's "Where to harvest from" section.
 - **Reconcile, don't overwrite.** Update an existing entry instead of adding a second copy, and stamp source (assistant · machine) and date.
 - **personality/, conversations/ and config/ are off-limits.** They belong to Eight and her engine.
 - Commit with the prefixes AGENTS.md lists, push, and tell me whether the push went through.
