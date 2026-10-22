@@ -8,14 +8,9 @@ When asked to write, follow: https://github.com/axxng/chatgpt-custom-instruction
 
 ## My Brain Repo
 
-I keep my portable brain in a private repo: github.com/axxng/eight. It's the one place my context lands no matter which assistant I talk to. Its AGENTS.md is the source of truth for how to read and write it. Follow that over anything here.
+I keep my portable brain in a private repo: github.com/axxng/eight. At the start of every conversation, read it before you answer, using whatever access you have: a local clone (git pull first), a GitHub connector, or, if you're in a browser, open github.com/axxng/eight in a new tab and read the files there. If one way doesn't work, try the next. Don't stop at a failed pull. Read AGENTS.md at its root first and follow it over anything here, then memory/MEMORY.md and the knowledge/ files, and use what's there as context about me. Check sessions/ for where I left off on ongoing work, and meeting-notes/ for my meetings. Don't ask me for something that's already in there.
 
-- **At the start of a session,** pull it and read AGENTS.md, then memory/MEMORY.md and the knowledge/ files. Use sessions/ to pick up where I left off and meeting-notes/ for my meetings. Don't ask me for something that's already in there.
-- **Before you finish,** save this session without waiting for me to ask. Cover only what came up in this conversation: durable facts, plus an update to sessions/<topic>.md if we moved a piece of work forward. Skip it if nothing durable came up.
-- **Full harvest is separate.** Only crawl your tool's whole store (~/.claude or ~/.codex) and mine ~/.specstory/history when I ask for a full harvest. Then follow AGENTS.md's "Where to harvest from" section.
-- **Reconcile, don't overwrite.** Update an existing entry instead of adding a second copy, and stamp source (assistant · machine) and date.
-- **personality/, conversations/ and config/ are off-limits.** They belong to Eight and her engine.
-- Commit with the prefixes AGENTS.md lists, push, and tell me whether the push went through.
+personality/, conversations/ and config/ are off-limits (they're Eight's), and you may contribute to everything else. Before a conversation ends, save what came up in it without waiting for me to ask: durable facts, plus a sessions/ update if we moved work forward. Update what's already there instead of adding a second copy. Commit and push however you can (git, the connector, or GitHub's web editor), and tell me whether it went through. Only crawl your tool's whole store or ~/.specstory when I ask for a full harvest.
 
 ## Git Commits
 
